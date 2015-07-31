@@ -291,4 +291,8 @@ typedef void (^SHKRequestHandler)(NSData *responseData, NSURLResponse *urlRespon
     return result;
 }
 
+- (BOOL)isAuthorized {
+    return NO;
+}
+
 @end
