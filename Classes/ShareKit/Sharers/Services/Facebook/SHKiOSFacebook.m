@@ -20,6 +20,8 @@
 
 typedef void (^SHKRequestHandler)(NSData *responseData, NSURLResponse *urlResponse, NSError *error);
 
+static NSString *const kSHKFacebookAuthorized = @"kSHKFacebookAuthorized";
+
 @implementation SHKiOSFacebook
 
 #pragma mark - SHKSharer config
@@ -129,6 +131,7 @@ typedef void (^SHKRequestHandler)(NSData *responseData, NSURLResponse *urlRespon
     
     [[NSUserDefaults standardUserDefaults] removeObjectForKey:kSHKFacebookUserInfo];
     [[NSUserDefaults standardUserDefaults] removeObjectForKey:kSHKFacebookVideoUploadLimits];
+    [[NSUserDefaults standardUserDefaults] removeObjectForKey:kSHKFacebookAuthorized];
 }
 
 #pragma mark - ShareKit UI
@@ -291,8 +294,15 @@ typedef void (^SHKRequestHandler)(NSData *responseData, NSURLResponse *urlRespon
     return result;
 }
 
+- (void)authDidFinish:(BOOL)success {
+    [[NSUserDefaults standardUserDefaults] setBool:success forKey:kSHKFacebookAuthorized];
+    [[NSUserDefaults standardUserDefaults] synchronize];
+    [super authDidFinish:success];
+}
+
+
 - (BOOL)isAuthorized {
-    return NO;
+    return [super isAuthorized] && [[NSUserDefaults standardUserDefaults] boolForKey:kSHKFacebookAuthorized];
 }
 
 @end
